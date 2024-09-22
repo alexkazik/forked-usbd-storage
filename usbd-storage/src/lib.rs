@@ -15,7 +15,8 @@
 //! | `bbb` | Include Bulk Only Transport           |
 //! | `scsi` | Include SCSI subclass                 |
 //! | `ufi` | Include USB Floppy Interface sublcass |
-//! | `defmt` | Enable logging via [defmt](https://crates.io/crates/defmt) crate |
+//! | `defmt` | Derive [defmt](https://crates.io/crates/defmt) |
+//! | `defmt-log` | Log internal messages via defmt |
 //!
 //! [usb-device]: https://crates.io/crates/usb-device
 //! [SCSI]: crate::subclass::scsi
