@@ -32,8 +32,10 @@ const MODE_SENSE_10: u8 = 0x5A;
 
 /* SBC */
 const READ_10: u8 = 0x28;
+#[cfg(not(feature = "u32"))]
 const READ_16: u8 = 0x88;
 const READ_CAPACITY_10: u8 = 0x25;
+#[cfg(not(feature = "u32"))]
 const READ_CAPACITY_16: u8 = 0x9E;
 const WRITE_10: u8 = 0x2A;
 
@@ -77,16 +79,29 @@ pub enum ScsiCommand {
 
     /* SBC */
     ReadCapacity10,
+    #[cfg(not(feature = "u32"))]
     ReadCapacity16 {
         alloc_len: u32,
     },
     Read {
+        #[cfg(not(feature = "u32"))]
         lba: u64,
+        #[cfg(feature = "u32")]
+        lba: u32,
+        #[cfg(not(feature = "u32"))]
         len: u64,
+        #[cfg(feature = "u32")]
+        len: u32,
     },
     Write {
+        #[cfg(not(feature = "u32"))]
         lba: u64,
+        #[cfg(feature = "u32")]
+        lba: u32,
+        #[cfg(not(feature = "u32"))]
         len: u64,
+        #[cfg(feature = "u32")]
+        len: u32,
     },
 
     /* MMC */
@@ -119,20 +134,22 @@ fn parse_cb(cb: &[u8]) -> ScsiCommand {
             alloc_len: cb[4],
         },
         READ_CAPACITY_10 => ScsiCommand::ReadCapacity10,
+        #[cfg(not(feature = "u32"))]
         READ_CAPACITY_16 => ScsiCommand::ReadCapacity16 {
             alloc_len: u32::from_be_bytes([cb[10], cb[11], cb[12], cb[13]]),
         },
         READ_10 => ScsiCommand::Read {
-            lba: u32::from_be_bytes([cb[2], cb[3], cb[4], cb[5]]) as u64,
-            len: u16::from_be_bytes([cb[7], cb[8]]) as u64,
+            lba: u32::from_be_bytes([cb[2], cb[3], cb[4], cb[5]]).into(),
+            len: u16::from_be_bytes([cb[7], cb[8]]).into(),
         },
+        #[cfg(not(feature = "u32"))]
         READ_16 => ScsiCommand::Read {
             lba: u64::from_be_bytes((&cb[2..10]).try_into().unwrap()),
-            len: u32::from_be_bytes((&cb[10..14]).try_into().unwrap()) as u64,
+            len: u32::from_be_bytes((&cb[10..14]).try_into().unwrap()).into(),
         },
         WRITE_10 => ScsiCommand::Write {
-            lba: u32::from_be_bytes([cb[2], cb[3], cb[4], cb[5]]) as u64,
-            len: u16::from_be_bytes([cb[7], cb[8]]) as u64,
+            lba: u32::from_be_bytes([cb[2], cb[3], cb[4], cb[5]]).into(),
+            len: u16::from_be_bytes([cb[7], cb[8]]).into(),
         },
         MODE_SENSE_6 => ScsiCommand::ModeSense6 {
             dbd: (cb[1] & 0b00001000) != 0,

@@ -28,6 +28,7 @@ defmt = ["dep:defmt", "usb-device/defmt"]
 bbb = []
 ufi = []
 scsi = []
+u32 = []
 
 [[test]]
 name = "scsi_bbb"
