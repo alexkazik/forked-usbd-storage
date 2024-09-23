@@ -20,7 +20,7 @@ This crate has a couple of opt-in features that all could be used independently.
 |-------------|------------------------------------------------|
 | `bbb`       | Include Bulk Only Transport                    |
 | `scsi`      | Include SCSI subclass                          |
-| `ufi`       | Include USB Floppy Interface sublcass          |
+| `ufi`       | Include USB Floppy Interface subclass          |
 | `defmt`     | Derive [defmt](https://crates.io/crates/defmt) |
 | `defmt-log` | Log internal messages via defmt                |
 
